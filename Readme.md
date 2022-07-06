@@ -64,14 +64,12 @@ echo "export KUBECONFIG=$HOME/.kube/admin.conf" >> ~/.bashrc
 
 
 # 如果在执行过程中出现权限相关问题，可能时因为没有将zgs用户添加至sudo权限组中，执行下面命令。执行时需要切换至root用户下。
-[root@master k8s]# su -
-Last login: Wed Aug 26 11:06:42 CST 2020 from 192.168.43.130 on pts/1
-[root@master ~]# chmod u+w /etc/sudoers
-[root@master ~]# vim /etc/sudoers
+chmod u+w /etc/sudoers
+vim /etc/sudoers
 
 # 在文件内找到："root ALL=(ALL) ALL"在起下面添加XXX ALL=(ALL) ALL"
 # (这里的XXX是我的用户名)，然后保存退出。
 
-[root@master ~]# chmod u-w /etc/sudoers
-[root@master ~]# exit
+chmod u-w /etc/sudoers
+exit
 ```
