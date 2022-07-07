@@ -5,6 +5,8 @@ echo "Setup base env"
 sed -i -e "s|mirrorlist=|#mirrorlist=|g" /etc/yum.repos.d/CentOS-*
 sed -i -e "s|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g" /etc/yum.repos.d/CentOS-*
 
+yum install -y wget vim
+
 swapoff -a && sed -ri 's/.*swap.*/#&/' /etc/fstab
 systemctl stop firewalld.service && systemctl disable --now firewalld.service
 setenforce 0; sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
@@ -39,7 +41,7 @@ sysctl --system
 
 yum install -y yum-utils device-mapper-persistent-data lvm2
 
-yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 yum install containerd.io -y
 
 mkdir -p /etc/containerd; cp /vagrant/config.toml /etc/containerd/config.toml
@@ -50,8 +52,8 @@ cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 name=Kubernetes
 baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
 enabled=1
-gpgcheck=1
-repo_gpgcheck=1
+gpgcheck=0
+repo_gpgcheck=0
 gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
 EOF
 

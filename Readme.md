@@ -10,14 +10,24 @@ kubeadm config images pull --image-repository registry.aliyuncs.com/google_conta
 ## 初始化 master 集群
 
 ```sh
-kubeadm init --config=kubeadm.yml --upload-certs --ignore-preflight-errors=ImagePull
+kubeadm init --config=/vagrant/kubeadm.yml --upload-certs --ignore-preflight-errors=ImagePull
 ```
 
 ## 添加到 profile
 
 ```sh
 echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> /etc/profile
+alias k='kubectl' 
+source <(kubectl completion bash | sed s/kubectl/k/g)
+
+## general user
 source /etc/profile
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+
+## root user
+export KUBECONFIG=/etc/kubernetes/admin.conf
 ```
 
 ## 配置网络
@@ -42,14 +52,6 @@ kubeadm join xxxxxx
 
 
 # 补充
-
-## 补全 k
-
-```sh
-alias k='kubectl' 
-source <(kubectl completion bash | sed s/kubectl/k/g)
-```
-
 
 ## master节点服务器执行, 如果用户不在管理员组，则需要添加管理员权限
 
