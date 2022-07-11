@@ -16,15 +16,15 @@ kubeadm init --config=/vagrant/kubeadm.yml --upload-certs --ignore-preflight-err
 ## 添加到 profile
 
 ```sh
-export KUBECONFIG=/etc/kubernetes/admin.conf"
+export KUBECONFIG="/etc/kubernetes/admin.conf"
 alias k='kubectl' 
 source <(kubectl completion bash | sed s/kubectl/k/g)
 
 ## general user
 source /etc/profile
 mkdir -p $HOME/.kube
-cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-chown $(id -u):$(id -g) $HOME/.kube/config
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 ## root user
 export KUBECONFIG=/etc/kubernetes/admin.conf
