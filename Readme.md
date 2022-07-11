@@ -13,10 +13,22 @@ kubeadm config images pull --image-repository registry.aliyuncs.com/google_conta
 kubeadm init --config=/vagrant/kubeadm.yml --upload-certs --ignore-preflight-errors=ImagePull
 ```
 
+## 配置 sudoers
+
+```sh
+usermod -aG root vagrant
+
+chmod u+w /etc/sudoers
+vim /etc/sudoers
+# 在文件内找到："root ALL=(ALL) ALL"在起下面添加XXX ALL=(ALL) ALL"
+# (这里的XXX是我的用户名)，然后保存退出。
+
+chmod u-w /etc/sudoers
+```
+
 ## 添加到 profile
 
 ```sh
-export KUBECONFIG="/etc/kubernetes/admin.conf"
 alias k='kubectl' 
 source <(kubectl completion bash | sed s/kubectl/k/g)
 
@@ -25,9 +37,10 @@ source /etc/profile
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
+echo "export KUBECONFIG=$HOME/.kube/config" >> ~/.bashrc
 
 ## root user
-export KUBECONFIG=/etc/kubernetes/admin.conf
+echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> /etc/profile
 ```
 
 ## 配置网络
@@ -48,30 +61,4 @@ kubeadm token create --print-join-command
 
 ```sh
 kubeadm join xxxxxx
-```
-
-
-# 补充
-
-## master节点服务器执行, 如果用户不在管理员组，则需要添加管理员权限
-
-```sh
-usermod -g root vagrant
-su vagrant
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/admin.conf
-[sudo] password for vagrant: 
-sudo chown $(id -u):$(id -g) $HOME/.kube/admin.conf
-echo "export KUBECONFIG=$HOME/.kube/admin.conf" >> ~/.bashrc
-
-
-# 如果在执行过程中出现权限相关问题，可能时因为没有将zgs用户添加至sudo权限组中，执行下面命令。执行时需要切换至root用户下。
-chmod u+w /etc/sudoers
-vim /etc/sudoers
-
-# 在文件内找到："root ALL=(ALL) ALL"在起下面添加XXX ALL=(ALL) ALL"
-# (这里的XXX是我的用户名)，然后保存退出。
-
-chmod u-w /etc/sudoers
-exit
 ```
